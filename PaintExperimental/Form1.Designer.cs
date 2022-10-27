@@ -30,15 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PaintForm));
             this.button1 = new System.Windows.Forms.Button();
-            this.DrawPanel = new System.Windows.Forms.Panel();
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.DrawLineButton = new System.Windows.Forms.Button();
-            this.ToolsPanel.SuspendLayout();
+            this.DrawPictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.DrawPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1088, 481);
+            this.button1.Location = new System.Drawing.Point(1281, 240);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
@@ -46,18 +46,8 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.OnSaveButtonClick);
             // 
-            // DrawPanel
-            // 
-            this.DrawPanel.Location = new System.Drawing.Point(12, 85);
-            this.DrawPanel.Name = "DrawPanel";
-            this.DrawPanel.Size = new System.Drawing.Size(973, 553);
-            this.DrawPanel.TabIndex = 1;
-            this.DrawPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnDrawPaneMouseDown);
-            this.DrawPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnDrawPanelMouseUp);
-            // 
             // ToolsPanel
             // 
-            this.ToolsPanel.Controls.Add(this.DrawLineButton);
             this.ToolsPanel.Location = new System.Drawing.Point(12, 12);
             this.ToolsPanel.Name = "ToolsPanel";
             this.ToolsPanel.Size = new System.Drawing.Size(1225, 57);
@@ -66,27 +56,37 @@
             // DrawLineButton
             // 
             this.DrawLineButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawLineButton.Image")));
-            this.DrawLineButton.Location = new System.Drawing.Point(238, 3);
+            this.DrawLineButton.Location = new System.Drawing.Point(1290, 153);
             this.DrawLineButton.Name = "DrawLineButton";
             this.DrawLineButton.Size = new System.Drawing.Size(24, 23);
             this.DrawLineButton.TabIndex = 3;
             this.DrawLineButton.UseVisualStyleBackColor = true;
             this.DrawLineButton.Click += new System.EventHandler(this.OnDrawLineButtonClick);
             // 
+            // DrawPictureBox
+            // 
+            this.DrawPictureBox.Location = new System.Drawing.Point(12, 91);
+            this.DrawPictureBox.Name = "DrawPictureBox";
+            this.DrawPictureBox.Size = new System.Drawing.Size(1232, 603);
+            this.DrawPictureBox.TabIndex = 4;
+            this.DrawPictureBox.TabStop = false;
+            this.DrawPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnDrawPictureBoxMouseDown);
+            this.DrawPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnDrawPictureBoMouseUp);
+            // 
             // PaintForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1384, 1061);
+            this.Controls.Add(this.DrawPictureBox);
+            this.Controls.Add(this.DrawLineButton);
             this.Controls.Add(this.ToolsPanel);
-            this.Controls.Add(this.DrawPanel);
             this.Controls.Add(this.button1);
             this.Name = "PaintForm";
             this.Text = "Paint 2.0";
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnFormPaint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnPaintFormMouseUp);
-            this.ToolsPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.DrawPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -94,8 +94,8 @@
         #endregion
 
         private Button button1;
-        private Panel DrawPanel;
         private Panel ToolsPanel;
         private Button DrawLineButton;
+        private PictureBox DrawPictureBox;
     }
 }
