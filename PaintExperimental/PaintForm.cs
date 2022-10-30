@@ -46,6 +46,11 @@ namespace PaintExperimental
         public Pen _pen;
 
         /// <summary>
+        /// Текущий цвет кистей
+        /// </summary>
+        public Color _currentColor;
+
+        /// <summary>
         /// Начальная точка - позиция мыши
         /// </summary>
         private Point? _startMousePosition;
@@ -77,8 +82,8 @@ namespace PaintExperimental
 
             image = new Bitmap(1000, 1000);
 
-            // По умолчанию черный цвет
-            _pen = new Pen(Color.Black);
+            _currentColor = Color.Black;
+            _pen = new Pen(_currentColor);
 
             _isDrawing = false;
         }
@@ -167,6 +172,18 @@ namespace PaintExperimental
         private void OnDrawEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawEllipse;
+        }
+
+        private void OnBlackColorButtonClick(object sender, EventArgs e)
+        {
+            _currentColor = Color.Black;
+            _pen.Color = _currentColor;
+        }
+
+        private void OnRedColorButtonClick(object sender, EventArgs e)
+        {
+            _currentColor = Color.Red;
+            _pen.Color = _currentColor;
         }
 
         private void DrawLine()
