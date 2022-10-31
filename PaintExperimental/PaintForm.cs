@@ -283,13 +283,18 @@ namespace PaintExperimental
 
         private void OnOpenFileButtonClick(object sender, EventArgs e)
         {
-
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.OpenFile();
+            // фильтр для открытия только нужных файлов
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
 
-            //openFileDialog.FileName;
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Image image = new Bitmap($@"{openFileDialog.FileName}");
+
+                DrawPictureBox.Image = image;
+                DrawPictureBox.Invalidate();
+            }
         }
 
         private void DrawString()
