@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PaintForm));
-            this.button1 = new System.Windows.Forms.Button();
+            this.SaveImageButton = new System.Windows.Forms.Button();
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.OpenFileButton = new System.Windows.Forms.Button();
             this.TextBox = new System.Windows.Forms.TextBox();
@@ -55,21 +55,22 @@
             ((System.ComponentModel.ISupportInitialize)(this.DrawPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // SaveImageButton
             // 
-            this.button1.Location = new System.Drawing.Point(1281, 240);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Сохранитьъ";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.OnSaveButtonClick);
+            this.SaveImageButton.Image = ((System.Drawing.Image)(resources.GetObject("SaveImageButton.Image")));
+            this.SaveImageButton.Location = new System.Drawing.Point(64, 19);
+            this.SaveImageButton.Name = "SaveImageButton";
+            this.SaveImageButton.Size = new System.Drawing.Size(35, 35);
+            this.SaveImageButton.TabIndex = 0;
+            this.SaveImageButton.UseVisualStyleBackColor = true;
+            this.SaveImageButton.Click += new System.EventHandler(this.OnSaveImageButtonClick);
             // 
             // ToolsPanel
             // 
             this.ToolsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ToolsPanel.Controls.Add(this.OpenFileButton);
             this.ToolsPanel.Controls.Add(this.TextBox);
+            this.ToolsPanel.Controls.Add(this.SaveImageButton);
             this.ToolsPanel.Controls.Add(this.WriteTextButton);
             this.ToolsPanel.Controls.Add(this.CurrentBackgroundColorLabel);
             this.ToolsPanel.Controls.Add(this.CurrentBackgroundColorPanel);
@@ -88,7 +89,7 @@
             this.ToolsPanel.Controls.Add(this.DrawLineButton);
             this.ToolsPanel.Location = new System.Drawing.Point(12, 12);
             this.ToolsPanel.Name = "ToolsPanel";
-            this.ToolsPanel.Size = new System.Drawing.Size(1260, 75);
+            this.ToolsPanel.Size = new System.Drawing.Size(1547, 75);
             this.ToolsPanel.TabIndex = 2;
             // 
             // OpenFileButton
@@ -306,7 +307,6 @@
             this.ClientSize = new System.Drawing.Size(1583, 1061);
             this.Controls.Add(this.DrawPictureBox);
             this.Controls.Add(this.ToolsPanel);
-            this.Controls.Add(this.button1);
             this.Name = "PaintForm";
             this.Text = "Paint 2.0";
             this.ToolsPanel.ResumeLayout(false);
@@ -319,7 +319,7 @@
 
         #endregion
 
-        private Button button1;
+        private Button SaveImageButton;
         private Panel ToolsPanel;
         private Button DrawLineButton;
         private PictureBox DrawPictureBox;

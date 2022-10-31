@@ -58,10 +58,25 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="SaveImageButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
+        rwAAAK8BK7AVuQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAHqSURBVEhLYwAB
+        bW1tNlUFBXMlOSUXyrCcs4yMDCfYUBgwNjZmNTMxu5iRV/o2r7T2PQgD+X9KSkr/koJBejLzy96bGpud
+        kZKS4oIaz8CgqKholl1Y8ebi8x//YdjPP/j/xctX8OKC/ML/Hq5u/z3d3P9v37kTogeod9rSbX/s7Fxv
+        wy1RUVBwKKlteU+qBa5OLv9z8wr/+/n6/V+2bDncgpOPfv/vX7j7v729yx1wcNHCgr23///PLmv7CzTb
+        nmYWFNb2gSxwINsCL3eP/96eXv8tzcz/r1ixijQLgkIi/m/ZsvX/rt17cOINGzeCXb58+Yr/mzZv+R8c
+        Gkm8BWv2nvqflV/6PzO3mCgMUrt272niLaAED6wFGw9f+u8TmfHf3iuKLAzSu+bANdwWWLuG/FepfvJf
+        peM/WVi5+vF/B48w3BYYO4Vj1UgKtnELJ84C5ZSN/1XilhGFwWoHnQUqtS/+q1Q9JA6D1JJqgbJv839l
+        z0riMFAtyRaQiy1ciPWBc/Z/FetoojBYLUgPEOva0SCZggyWbf7zn6vky391q1BUC0BVZkZx8x+QIEiS
+        IfcDRRhmAchMJVklU3Clb2fvej+rtPWPmp7NPxGviRRhkBmZJS2gevkeyGxwvQxiUKfZAsEgsyCGMzAA
+        ACHnQwWMrVpNAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="OpenFileButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        rQAAAK0BVE7WMAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAALGSURBVEhLrZVN
+        qgAAAKoBBgpwTwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAALGSURBVEhLrZVN
         aBNBFMfXg3hXsM0mTak1qaW0FxUKgvYkFYqCevAkSHvpwVrstRcxIHoQv9Bsv6zUprG29rvNbgNNsk1R
         EPHjUJQWxJNgaXZCqEWMzzebSXa3O20S7YMfu8y8+f8zb+dNhETccV1bdKQQ2MIm4gcQ9ggYNaGe/V5F
         avHI0iev3KV45e5bHtl/UgDQ57cNFEmRcRdoUQeQCXyGnEAUEcgYvutGYjNL1aNa8Xu8srSKJsBY9oS6

@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using static PaintExperimental.PaintForm;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PaintExperimental
 {
@@ -36,6 +38,8 @@ namespace PaintExperimental
         private bool _isDrawing;
 
         private bool _isErasing;
+
+        private bool _isTypingText;
 
         /// <summary>
         /// Текущий цвет - цвет рисования?
@@ -79,7 +83,7 @@ namespace PaintExperimental
         /// </summary>
         private Point? _endMousePosition;
 
-        private readonly Bitmap image;
+        private readonly Bitmap _image;
 
         private Font fnt = new Font("Arial", 10);
 
@@ -91,7 +95,7 @@ namespace PaintExperimental
 
             _graphics = DrawPictureBox.CreateGraphics();
 
-            image = new Bitmap(1000, 1000);
+            _image = new Bitmap(1000, 1000);
 
             _currentColor = Color.Black;
             _backgroundColor = Color.White;
@@ -100,6 +104,7 @@ namespace PaintExperimental
 
             _isDrawing = false;
             _isErasing = false;
+            _isTypingText = false;
             _isColorOfPainting = true;
 
             //graphics.Dispose();
@@ -171,39 +176,39 @@ namespace PaintExperimental
         //    graphics.Dispose();
         //}
 
-        private void OnSaveButtonClick(object sender, EventArgs e)
-        {
-            image.Save("Безымянный.png");
-        }
-
         private void OnDrawLineButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawLine;
             _isErasing = false;
+            _isTypingText |= false;
         }
 
         private void OnDrawRectangleButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawRectangle;
             _isErasing = false;
+            _isTypingText = false;
         }
 
         private void OnDrawEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawEllipse;
             _isErasing = false;
+            _isTypingText = false;
         }
 
         private void OnDrawFilledEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawFilledEllipse;
             _isErasing = false;
+            _isTypingText = false;
         }
 
         private void OnDrawFilledRectangleButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawFilledRectangle;
             _isErasing = false;
+            _isTypingText = false;
         }
 
         private void OnEraseButtonClick(object sender, EventArgs e)
@@ -211,7 +216,9 @@ namespace PaintExperimental
             //_currentPaintAction = Erase;
 
             _isErasing = true;
+            _isTypingText = false;
             _currentPaintAction = DrawLine;
+
         }
 
         private void OnClearPictureBoxClick(object sender, EventArgs e)
@@ -279,6 +286,7 @@ namespace PaintExperimental
         {
             _currentPaintAction = DrawString;
             _isErasing = false;
+            _isTypingText = true;
         }
 
         private void OnOpenFileButtonClick(object sender, EventArgs e)
@@ -290,7 +298,7 @@ namespace PaintExperimental
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                Image image = new Bitmap($@"{openFileDialog.FileName}");
+                System.Drawing.Image image = new Bitmap($@"{openFileDialog.FileName}");
 
                 DrawPictureBox.Image = image;
                 DrawPictureBox.Invalidate();
@@ -311,7 +319,11 @@ namespace PaintExperimental
 
                 PaintAction action = (graphics) => { graphics.DrawString(TextBox.Text, font, brush, startPoint); };
 
-                AddPaintAction(action);
+                _allActions += action;
+
+                DrawPictureBox.Invalidate();
+
+                //AddPaintAction(action);
             }
 
             //_graphics.DrawString()
@@ -448,7 +460,7 @@ namespace PaintExperimental
 
         private void OnDrawPictureBoxMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && _startMousePosition.HasValue)
+            if (e.Button == MouseButtons.Left && _startMousePosition.HasValue && _isDrawing && !_isTypingText)
             {
                 if (_endMousePosition == null)
                     _endMousePosition = new Point();
@@ -515,5 +527,20 @@ namespace PaintExperimental
             DrawPictureBox.Invalidate();
         }
 
+        private void OnSaveImageButtonClick(object sender, EventArgs e)
+        {
+            Rectangle rec = new Rectangle(DrawPictureBox.Location, DrawPictureBox.Size);
+            DrawPictureBox.DrawToBitmap(_image, rec);
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            // фильтр для сохранения только нужных файлов
+            saveFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _image.Save($"{saveFileDialog.FileName}");
+            }
+        }
     }
 }
