@@ -26,6 +26,26 @@ namespace PaintExperimental
         private PaintAction _lastAction;
 
         /// <summary>
+        /// ¬се текущие действи€
+        /// </summary>
+        private Stack<PaintAction> _stackOfAllActions;
+
+        /// <summary>
+        /// ќтмененные действи€
+        /// </summary>
+        private Stack<PaintAction> _canceledActions;
+
+        ///// <summary>
+        ///// ¬се действи€, которые происходили во врем€ одного стирани€, то есть все совокупные ссылки на DrawLine
+        ///// </summary>
+        //private Stack<PaintAction> _oneErasingActions;
+
+        /// <summary>
+        /// —писок точек ломаной линии
+        /// </summary>
+        private List<Point> _pointsOfBrokenLine;
+
+        /// <summary>
         /// “ип делегата CurrentPaintAction, который будет хранить текущий метод, который нужно произвести при рисовании
         /// </summary>
         public delegate void CurrentPaintAction();
@@ -107,6 +127,11 @@ namespace PaintExperimental
             _isTypingText = false;
             _isColorOfPainting = true;
 
+            _stackOfAllActions = new Stack<PaintAction>();
+            _canceledActions = new Stack<PaintAction>();
+            //_oneErasingActions = new Stack<PaintAction>();
+            _pointsOfBrokenLine = new List<Point>();
+
             //graphics.Dispose();
         }
 
@@ -180,7 +205,7 @@ namespace PaintExperimental
         {
             _currentPaintAction = DrawLine;
             _isErasing = false;
-            _isTypingText |= false;
+            _isTypingText = false;
         }
 
         private void OnDrawRectangleButtonClick(object sender, EventArgs e)
@@ -213,12 +238,10 @@ namespace PaintExperimental
 
         private void OnEraseButtonClick(object sender, EventArgs e)
         {
-            //_currentPaintAction = Erase;
-
             _isErasing = true;
             _isTypingText = false;
-            _currentPaintAction = DrawLine;
-
+            //_currentPaintAction = DrawLine;
+            _currentPaintAction = DrawLines;
         }
 
         private void OnClearPictureBoxClick(object sender, EventArgs e)
@@ -226,6 +249,8 @@ namespace PaintExperimental
             _allActions = null;
             _lastAction = null;
             _currentPaintAction = null;
+            DrawPictureBox.Image = null;
+
 
             _graphics.Clear(Color.White);
         }
@@ -305,6 +330,34 @@ namespace PaintExperimental
             }
         }
 
+        private void OnUnDoActionButtonClick(object sender, EventArgs e)
+        {
+            if(_stackOfAllActions.Count > 0)
+            {
+                var extraAction = _stackOfAllActions.Pop();
+
+                var action = _stackOfAllActions.Pop();
+
+                _canceledActions.Push(action);
+
+                _allActions -= action;
+
+                _lastAction -= action;
+
+                DrawPictureBox.Invalidate();
+            }
+        }
+
+        private void OnReDoButtonClick(object sender, EventArgs e)
+        {
+            if(_canceledActions.Count > 0)
+            {
+                var action = _canceledActions.Pop();
+
+                AddPaintAction(action);
+            }
+        }
+
         private void DrawString()
         {       
             if(!string.IsNullOrEmpty(TextBox.Text))
@@ -319,6 +372,8 @@ namespace PaintExperimental
 
                 PaintAction action = (graphics) => { graphics.DrawString(TextBox.Text, font, brush, startPoint); };
 
+                _stackOfAllActions.Push(action);
+
                 _allActions += action;
 
                 DrawPictureBox.Invalidate();
@@ -331,18 +386,6 @@ namespace PaintExperimental
             //    graphics.DrawString("Hello World1", font, brush, 450, 450);
             //    var size = graphics.MeasureString("Hello World1", font);
         }
-
-        //private void Erase()
-        //{
-        //    Pen pen = new Pen(Color.White, _lineWidth);
-
-        //    Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
-        //    Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
-
-        //    PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
-
-        //    AddPaintAction(action);
-        //}
 
         private void DrawLine()
         {
@@ -361,6 +404,30 @@ namespace PaintExperimental
             Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
 
             PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
+
+            AddPaintAction(action);
+
+            //_allActions += action;
+            //_lastAction = action;
+
+            //DrawPictureBox.Invalidate();
+        }
+
+        private void DrawLines()
+        {
+            float width = _lineWidth;
+            Pen pen = new Pen(Color.White, width);
+
+            Array points = _pointsOfBrokenLine.ToArray();
+
+            //Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
+            //Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
+
+            //PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
+
+            PaintAction action = (graphics) => { graphics.DrawLines(pen, points as Point[]); };
+
+            //_graphics.DrawLines()
 
             AddPaintAction(action);
 
@@ -439,6 +506,9 @@ namespace PaintExperimental
 
                 _startMousePosition = e.Location;
 
+                if (_isErasing)
+                    _pointsOfBrokenLine.Add(e.Location);
+
                 _isDrawing = true;
             }
         }
@@ -455,6 +525,20 @@ namespace PaintExperimental
                 _isDrawing = false;
 
                 _currentPaintAction?.Invoke();
+
+                if (_isErasing)
+                    _pointsOfBrokenLine.Clear();
+
+                _allActions -= _lastAction;
+
+                if (_stackOfAllActions.Count > 0)
+                {
+                    var plug = _stackOfAllActions.Pop();
+                }
+
+                var _all = _stackOfAllActions;
+
+                var cancel = _canceledActions;
             }
         }
 
@@ -467,13 +551,41 @@ namespace PaintExperimental
 
                 _endMousePosition = e.Location;
 
-                if(_isErasing == false)
-                    _allActions -= _lastAction;
+
+                //if (_isErasing == false)
+                //    _allActions -= _lastAction;
+
+
+                //_currentPaintAction?.Invoke();
+
+                //if (_isErasing)
+                //{
+                //    _startMousePosition = e.Location;
+                //}
+
+
+                //if (_isErasing == false)
+                //{
+                //    _allActions -= _lastAction;
+                //}
+                //else
+                //{
+                //    _pointsOfBrokenLine.Add(e.Location);
+                //}
+
+                if(_isErasing)
+                {
+                    _pointsOfBrokenLine.Add(e.Location);
+                }
+
+                _allActions -= _lastAction;
+
+                if (_stackOfAllActions.Count > 0)
+                {
+                    var plug = _stackOfAllActions.Pop();
+                }
 
                 _currentPaintAction?.Invoke();
-
-                if (_isErasing)
-                    _startMousePosition = e.Location;
             }
         }
 
@@ -523,6 +635,8 @@ namespace PaintExperimental
         {
             _allActions += paintAction;
             _lastAction = paintAction;
+
+            _stackOfAllActions.Push(paintAction);
 
             DrawPictureBox.Invalidate();
         }
