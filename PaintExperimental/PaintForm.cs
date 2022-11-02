@@ -57,9 +57,11 @@ namespace PaintExperimental
 
         private bool _isDrawing;
 
-        private bool _isErasing;
+        private bool _isDrawingByPen;
 
         private bool _isTypingText;
+
+        private bool _isActionCompleted;
 
         /// <summary>
         /// Текущий цвет - цвет рисования?
@@ -123,9 +125,10 @@ namespace PaintExperimental
             _pen = new Pen(_currentColor, _lineWidth);
 
             _isDrawing = false;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = false;
             _isColorOfPainting = true;
+            _isActionCompleted = false;
 
             _stackOfAllActions = new Stack<PaintAction>();
             _canceledActions = new Stack<PaintAction>();
@@ -204,44 +207,51 @@ namespace PaintExperimental
         private void OnDrawLineButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawLine;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = false;
         }
 
         private void OnDrawRectangleButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawRectangle;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = false;
         }
 
         private void OnDrawEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawEllipse;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = false;
         }
 
         private void OnDrawFilledEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawFilledEllipse;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = false;
         }
 
         private void OnDrawFilledRectangleButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawFilledRectangle;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = false;
+        }
+
+        private void OnDrawByPenButtonClick(object sender, EventArgs e)
+        {
+            _isDrawingByPen = true;
+            _isTypingText = false;
+            _currentPaintAction = DrawLines;
         }
 
         private void OnEraseButtonClick(object sender, EventArgs e)
         {
-            _isErasing = true;
+            _isDrawingByPen = true;
             _isTypingText = false;
             //_currentPaintAction = DrawLine;
-            _currentPaintAction = DrawLines;
+            _currentPaintAction = Erase;
         }
 
         private void OnClearPictureBoxClick(object sender, EventArgs e)
@@ -310,7 +320,7 @@ namespace PaintExperimental
         private void OnWriteTextButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawString;
-            _isErasing = false;
+            _isDrawingByPen = false;
             _isTypingText = true;
         }
 
@@ -334,7 +344,7 @@ namespace PaintExperimental
         {
             if(_stackOfAllActions.Count > 0)
             {
-                var extraAction = _stackOfAllActions.Pop();
+                //var extraAction = _stackOfAllActions.Pop();
 
                 var action = _stackOfAllActions.Pop();
 
@@ -389,16 +399,7 @@ namespace PaintExperimental
 
         private void DrawLine()
         {
-            Pen pen;
-
-            if(_isErasing)
-            {
-                float width = _lineWidth;
-                pen = new Pen(Color.White, width);
-            }
-             
-            else    
-                pen = (Pen)_pen.Clone();
+            Pen pen = (Pen)_pen.Clone();
 
             Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
             Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
@@ -415,7 +416,31 @@ namespace PaintExperimental
 
         private void DrawLines()
         {
+            Pen pen = (Pen)_pen.Clone();
+
+            Array points = _pointsOfBrokenLine.ToArray();
+
+            //Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
+            //Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
+
+            //PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
+
+            PaintAction action = (graphics) => { graphics.DrawLines(pen, points as Point[]); };
+
+            //_graphics.DrawLines()
+
+            AddPaintAction(action);
+
+            //_allActions += action;
+            //_lastAction = action;
+
+            //DrawPictureBox.Invalidate();
+        }
+
+        private void Erase()
+        {
             float width = _lineWidth;
+
             Pen pen = new Pen(Color.White, width);
 
             Array points = _pointsOfBrokenLine.ToArray();
@@ -506,8 +531,12 @@ namespace PaintExperimental
 
                 _startMousePosition = e.Location;
 
-                if (_isErasing)
+                if (_isDrawingByPen)
                     _pointsOfBrokenLine.Add(e.Location);
+
+                if (_isTypingText)
+                    ClearCancelledActionsStackAndInvokeNewAction();
+                    //_currentPaintAction.Invoke();
 
                 _isDrawing = true;
             }
@@ -524,21 +553,51 @@ namespace PaintExperimental
 
                 _isDrawing = false;
 
-                _currentPaintAction?.Invoke();
+                //_currentPaintAction?.Invoke();
 
-                if (_isErasing)
+                if (_isDrawingByPen)
                     _pointsOfBrokenLine.Clear();
 
-                _allActions -= _lastAction;
+                //_allActions -= _lastAction;
 
-                if (_stackOfAllActions.Count > 0)
-                {
-                    var plug = _stackOfAllActions.Pop();
-                }
+                //if (_stackOfAllActions.Count > 0)
+                //{
+                //    var plug = _stackOfAllActions.Pop();
+                //}
+
+                DrawPictureBox.Invalidate();
 
                 var _all = _stackOfAllActions;
 
                 var cancel = _canceledActions;
+
+                _isActionCompleted = true;
+
+
+
+
+                //if (_endMousePosition == null)
+                //    _endMousePosition = new Point();
+
+                //_endMousePosition = e.Location;
+
+                //_isDrawing = false;
+
+                //_currentPaintAction?.Invoke();
+
+                //if (_isErasing)
+                //    _pointsOfBrokenLine.Clear();
+
+                //_allActions -= _lastAction;
+
+                //if (_stackOfAllActions.Count > 0)
+                //{
+                //    var plug = _stackOfAllActions.Pop();
+                //}
+
+                //var _all = _stackOfAllActions;
+
+                //var cancel = _canceledActions;
             }
         }
 
@@ -552,16 +611,7 @@ namespace PaintExperimental
                 _endMousePosition = e.Location;
 
 
-                //if (_isErasing == false)
-                //    _allActions -= _lastAction;
-
-
                 //_currentPaintAction?.Invoke();
-
-                //if (_isErasing)
-                //{
-                //    _startMousePosition = e.Location;
-                //}
 
 
                 //if (_isErasing == false)
@@ -573,19 +623,25 @@ namespace PaintExperimental
                 //    _pointsOfBrokenLine.Add(e.Location);
                 //}
 
-                if(_isErasing)
+                if(_isDrawingByPen)
                 {
                     _pointsOfBrokenLine.Add(e.Location);
                 }
 
-                _allActions -= _lastAction;
-
-                if (_stackOfAllActions.Count > 0)
+                if (!_isActionCompleted)
                 {
-                    var plug = _stackOfAllActions.Pop();
-                }
+                    _allActions -= _lastAction;
 
-                _currentPaintAction?.Invoke();
+                    if (_stackOfAllActions.Count > 0)
+                    {
+                        var plug = _stackOfAllActions.Pop();
+                    }
+                }
+                else
+                    _isActionCompleted = false;
+
+                ClearCancelledActionsStackAndInvokeNewAction();
+                //_currentPaintAction?.Invoke();
             }
         }
 
@@ -655,6 +711,13 @@ namespace PaintExperimental
             {
                 _image.Save($"{saveFileDialog.FileName}");
             }
+        }
+
+        private void ClearCancelledActionsStackAndInvokeNewAction()
+        {
+            _canceledActions.Clear();
+
+            _currentPaintAction.Invoke();
         }
     }
 }
