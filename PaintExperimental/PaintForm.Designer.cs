@@ -31,12 +31,23 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PaintForm));
             this.SaveImageButton = new System.Windows.Forms.Button();
             this.ToolsPanel = new System.Windows.Forms.Panel();
+            this.OtherColorsLabel = new System.Windows.Forms.Label();
+            this.ChooseOtherColorButton = new System.Windows.Forms.Button();
+            this.DrawByPenButton = new System.Windows.Forms.Button();
+            this.PurpleColorButton = new System.Windows.Forms.Button();
             this.ReDoButton = new System.Windows.Forms.Button();
+            this.BlueColorButton = new System.Windows.Forms.Button();
             this.UnDoActionButton = new System.Windows.Forms.Button();
+            this.DeepSkyBlueColorButton = new System.Windows.Forms.Button();
             this.OpenFileButton = new System.Windows.Forms.Button();
+            this.GreenColorButton = new System.Windows.Forms.Button();
             this.TextBox = new System.Windows.Forms.TextBox();
+            this.YellowColorButton = new System.Windows.Forms.Button();
+            this.OrangeColorButton = new System.Windows.Forms.Button();
             this.WriteTextButton = new System.Windows.Forms.Button();
+            this.GrayColorButton = new System.Windows.Forms.Button();
             this.CurrentBackgroundColorLabel = new System.Windows.Forms.Label();
+            this.WhiteColorButton = new System.Windows.Forms.Button();
             this.CurrentBackgroundColorPanel = new System.Windows.Forms.Panel();
             this.ClearPictureBox = new System.Windows.Forms.Button();
             this.CurrentColorLabel = new System.Windows.Forms.Label();
@@ -52,7 +63,6 @@
             this.DrawRectangleButton = new System.Windows.Forms.Button();
             this.DrawLineButton = new System.Windows.Forms.Button();
             this.DrawPictureBox = new System.Windows.Forms.PictureBox();
-            this.DrawByPenButton = new System.Windows.Forms.Button();
             this.ToolsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThicknessTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DrawPictureBox)).BeginInit();
@@ -71,14 +81,24 @@
             // ToolsPanel
             // 
             this.ToolsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.ToolsPanel.Controls.Add(this.OtherColorsLabel);
+            this.ToolsPanel.Controls.Add(this.ChooseOtherColorButton);
             this.ToolsPanel.Controls.Add(this.DrawByPenButton);
+            this.ToolsPanel.Controls.Add(this.PurpleColorButton);
             this.ToolsPanel.Controls.Add(this.ReDoButton);
+            this.ToolsPanel.Controls.Add(this.BlueColorButton);
             this.ToolsPanel.Controls.Add(this.UnDoActionButton);
+            this.ToolsPanel.Controls.Add(this.DeepSkyBlueColorButton);
             this.ToolsPanel.Controls.Add(this.OpenFileButton);
+            this.ToolsPanel.Controls.Add(this.GreenColorButton);
             this.ToolsPanel.Controls.Add(this.TextBox);
+            this.ToolsPanel.Controls.Add(this.YellowColorButton);
             this.ToolsPanel.Controls.Add(this.SaveImageButton);
+            this.ToolsPanel.Controls.Add(this.OrangeColorButton);
             this.ToolsPanel.Controls.Add(this.WriteTextButton);
+            this.ToolsPanel.Controls.Add(this.GrayColorButton);
             this.ToolsPanel.Controls.Add(this.CurrentBackgroundColorLabel);
+            this.ToolsPanel.Controls.Add(this.WhiteColorButton);
             this.ToolsPanel.Controls.Add(this.CurrentBackgroundColorPanel);
             this.ToolsPanel.Controls.Add(this.ClearPictureBox);
             this.ToolsPanel.Controls.Add(this.CurrentColorLabel);
@@ -98,6 +118,47 @@
             this.ToolsPanel.Size = new System.Drawing.Size(1547, 75);
             this.ToolsPanel.TabIndex = 2;
             // 
+            // OtherColorsLabel
+            // 
+            this.OtherColorsLabel.AutoSize = true;
+            this.OtherColorsLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.OtherColorsLabel.Location = new System.Drawing.Point(1391, 46);
+            this.OtherColorsLabel.Name = "OtherColorsLabel";
+            this.OtherColorsLabel.Size = new System.Drawing.Size(106, 21);
+            this.OtherColorsLabel.TabIndex = 5;
+            this.OtherColorsLabel.Text = "Другие цвета";
+            // 
+            // ChooseOtherColorButton
+            // 
+            this.ChooseOtherColorButton.Image = ((System.Drawing.Image)(resources.GetObject("ChooseOtherColorButton.Image")));
+            this.ChooseOtherColorButton.Location = new System.Drawing.Point(1424, 7);
+            this.ChooseOtherColorButton.Name = "ChooseOtherColorButton";
+            this.ChooseOtherColorButton.Size = new System.Drawing.Size(40, 40);
+            this.ChooseOtherColorButton.TabIndex = 13;
+            this.ChooseOtherColorButton.UseVisualStyleBackColor = true;
+            this.ChooseOtherColorButton.Click += new System.EventHandler(this.OnChooseOtherColorButtonClick);
+            // 
+            // DrawByPenButton
+            // 
+            this.DrawByPenButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawByPenButton.Image")));
+            this.DrawByPenButton.Location = new System.Drawing.Point(205, 19);
+            this.DrawByPenButton.Name = "DrawByPenButton";
+            this.DrawByPenButton.Size = new System.Drawing.Size(35, 35);
+            this.DrawByPenButton.TabIndex = 5;
+            this.DrawByPenButton.UseVisualStyleBackColor = true;
+            this.DrawByPenButton.Click += new System.EventHandler(this.OnDrawByPenButtonClick);
+            // 
+            // PurpleColorButton
+            // 
+            this.PurpleColorButton.BackColor = System.Drawing.Color.Purple;
+            this.PurpleColorButton.Location = new System.Drawing.Point(1355, 19);
+            this.PurpleColorButton.Name = "PurpleColorButton";
+            this.PurpleColorButton.Size = new System.Drawing.Size(30, 30);
+            this.PurpleColorButton.TabIndex = 12;
+            this.PurpleColorButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.PurpleColorButton.UseVisualStyleBackColor = false;
+            this.PurpleColorButton.Click += new System.EventHandler(this.OnPurpleColorButtonClick);
+            // 
             // ReDoButton
             // 
             this.ReDoButton.Image = ((System.Drawing.Image)(resources.GetObject("ReDoButton.Image")));
@@ -108,6 +169,16 @@
             this.ReDoButton.TabIndex = 5;
             this.ReDoButton.UseVisualStyleBackColor = true;
             this.ReDoButton.Click += new System.EventHandler(this.OnReDoButtonClick);
+            // 
+            // BlueColorButton
+            // 
+            this.BlueColorButton.BackColor = System.Drawing.Color.Blue;
+            this.BlueColorButton.Location = new System.Drawing.Point(1319, 19);
+            this.BlueColorButton.Name = "BlueColorButton";
+            this.BlueColorButton.Size = new System.Drawing.Size(30, 30);
+            this.BlueColorButton.TabIndex = 11;
+            this.BlueColorButton.UseVisualStyleBackColor = false;
+            this.BlueColorButton.Click += new System.EventHandler(this.OnBlueColorButtonClick);
             // 
             // UnDoActionButton
             // 
@@ -120,6 +191,16 @@
             this.UnDoActionButton.UseVisualStyleBackColor = true;
             this.UnDoActionButton.Click += new System.EventHandler(this.OnUnDoActionButtonClick);
             // 
+            // DeepSkyBlueColorButton
+            // 
+            this.DeepSkyBlueColorButton.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.DeepSkyBlueColorButton.Location = new System.Drawing.Point(1283, 19);
+            this.DeepSkyBlueColorButton.Name = "DeepSkyBlueColorButton";
+            this.DeepSkyBlueColorButton.Size = new System.Drawing.Size(30, 30);
+            this.DeepSkyBlueColorButton.TabIndex = 10;
+            this.DeepSkyBlueColorButton.UseVisualStyleBackColor = false;
+            this.DeepSkyBlueColorButton.Click += new System.EventHandler(this.DeepSkyBlueColorButtonClick);
+            // 
             // OpenFileButton
             // 
             this.OpenFileButton.Image = ((System.Drawing.Image)(resources.GetObject("OpenFileButton.Image")));
@@ -131,19 +212,49 @@
             this.OpenFileButton.UseVisualStyleBackColor = true;
             this.OpenFileButton.Click += new System.EventHandler(this.OnOpenFileButtonClick);
             // 
+            // GreenColorButton
+            // 
+            this.GreenColorButton.BackColor = System.Drawing.Color.Green;
+            this.GreenColorButton.Location = new System.Drawing.Point(1247, 19);
+            this.GreenColorButton.Name = "GreenColorButton";
+            this.GreenColorButton.Size = new System.Drawing.Size(30, 30);
+            this.GreenColorButton.TabIndex = 9;
+            this.GreenColorButton.UseVisualStyleBackColor = false;
+            this.GreenColorButton.Click += new System.EventHandler(this.OnGreenColorButtonClick);
+            // 
             // TextBox
             // 
             this.TextBox.Font = new System.Drawing.Font("Segoe UI", 11.1F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TextBox.Location = new System.Drawing.Point(706, 32);
+            this.TextBox.Location = new System.Drawing.Point(571, 27);
             this.TextBox.Margin = new System.Windows.Forms.Padding(1);
             this.TextBox.Name = "TextBox";
             this.TextBox.Size = new System.Drawing.Size(190, 27);
             this.TextBox.TabIndex = 11;
             // 
+            // YellowColorButton
+            // 
+            this.YellowColorButton.BackColor = System.Drawing.Color.Yellow;
+            this.YellowColorButton.Location = new System.Drawing.Point(1211, 19);
+            this.YellowColorButton.Name = "YellowColorButton";
+            this.YellowColorButton.Size = new System.Drawing.Size(30, 30);
+            this.YellowColorButton.TabIndex = 8;
+            this.YellowColorButton.UseVisualStyleBackColor = false;
+            this.YellowColorButton.Click += new System.EventHandler(this.OnYellowColorButtonClick);
+            // 
+            // OrangeColorButton
+            // 
+            this.OrangeColorButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.OrangeColorButton.Location = new System.Drawing.Point(1175, 19);
+            this.OrangeColorButton.Name = "OrangeColorButton";
+            this.OrangeColorButton.Size = new System.Drawing.Size(30, 30);
+            this.OrangeColorButton.TabIndex = 7;
+            this.OrangeColorButton.UseVisualStyleBackColor = false;
+            this.OrangeColorButton.Click += new System.EventHandler(this.OnOrangeColorButtonClick);
+            // 
             // WriteTextButton
             // 
             this.WriteTextButton.Image = ((System.Drawing.Image)(resources.GetObject("WriteTextButton.Image")));
-            this.WriteTextButton.Location = new System.Drawing.Point(640, 19);
+            this.WriteTextButton.Location = new System.Drawing.Point(531, 19);
             this.WriteTextButton.Margin = new System.Windows.Forms.Padding(1);
             this.WriteTextButton.Name = "WriteTextButton";
             this.WriteTextButton.Size = new System.Drawing.Size(35, 35);
@@ -151,22 +262,42 @@
             this.WriteTextButton.UseVisualStyleBackColor = true;
             this.WriteTextButton.Click += new System.EventHandler(this.OnWriteTextButtonClick);
             // 
+            // GrayColorButton
+            // 
+            this.GrayColorButton.BackColor = System.Drawing.Color.Gray;
+            this.GrayColorButton.Location = new System.Drawing.Point(1107, 19);
+            this.GrayColorButton.Name = "GrayColorButton";
+            this.GrayColorButton.Size = new System.Drawing.Size(30, 30);
+            this.GrayColorButton.TabIndex = 6;
+            this.GrayColorButton.UseVisualStyleBackColor = false;
+            this.GrayColorButton.Click += new System.EventHandler(this.OnGrayColorButtonClick);
+            // 
             // CurrentBackgroundColorLabel
             // 
             this.CurrentBackgroundColorLabel.AutoSize = true;
             this.CurrentBackgroundColorLabel.Font = new System.Drawing.Font("Segoe UI", 9.900001F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CurrentBackgroundColorLabel.Location = new System.Drawing.Point(1237, 49);
+            this.CurrentBackgroundColorLabel.Location = new System.Drawing.Point(946, 49);
             this.CurrentBackgroundColorLabel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.CurrentBackgroundColorLabel.Name = "CurrentBackgroundColorLabel";
             this.CurrentBackgroundColorLabel.Size = new System.Drawing.Size(76, 19);
             this.CurrentBackgroundColorLabel.TabIndex = 10;
             this.CurrentBackgroundColorLabel.Text = "Цвет фона";
             // 
+            // WhiteColorButton
+            // 
+            this.WhiteColorButton.BackColor = System.Drawing.Color.White;
+            this.WhiteColorButton.Location = new System.Drawing.Point(1071, 19);
+            this.WhiteColorButton.Name = "WhiteColorButton";
+            this.WhiteColorButton.Size = new System.Drawing.Size(30, 30);
+            this.WhiteColorButton.TabIndex = 5;
+            this.WhiteColorButton.UseVisualStyleBackColor = false;
+            this.WhiteColorButton.Click += new System.EventHandler(this.OnWhiteColorButtonClick);
+            // 
             // CurrentBackgroundColorPanel
             // 
             this.CurrentBackgroundColorPanel.BackColor = System.Drawing.SystemColors.InfoText;
             this.CurrentBackgroundColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.CurrentBackgroundColorPanel.Location = new System.Drawing.Point(1258, 14);
+            this.CurrentBackgroundColorPanel.Location = new System.Drawing.Point(967, 14);
             this.CurrentBackgroundColorPanel.Margin = new System.Windows.Forms.Padding(1);
             this.CurrentBackgroundColorPanel.Name = "CurrentBackgroundColorPanel";
             this.CurrentBackgroundColorPanel.Size = new System.Drawing.Size(33, 30);
@@ -176,7 +307,7 @@
             // ClearPictureBox
             // 
             this.ClearPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("ClearPictureBox.Image")));
-            this.ClearPictureBox.Location = new System.Drawing.Point(600, 19);
+            this.ClearPictureBox.Location = new System.Drawing.Point(491, 19);
             this.ClearPictureBox.Margin = new System.Windows.Forms.Padding(1);
             this.ClearPictureBox.Name = "ClearPictureBox";
             this.ClearPictureBox.Size = new System.Drawing.Size(35, 35);
@@ -189,7 +320,7 @@
             this.CurrentColorLabel.AutoSize = true;
             this.CurrentColorLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.CurrentColorLabel.Font = new System.Drawing.Font("Segoe UI", 9.900001F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.CurrentColorLabel.Location = new System.Drawing.Point(1171, 49);
+            this.CurrentColorLabel.Location = new System.Drawing.Point(880, 49);
             this.CurrentColorLabel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.CurrentColorLabel.Name = "CurrentColorLabel";
             this.CurrentColorLabel.Size = new System.Drawing.Size(53, 21);
@@ -200,7 +331,7 @@
             // 
             this.CurrentColorPanel.BackColor = System.Drawing.SystemColors.InfoText;
             this.CurrentColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.CurrentColorPanel.Location = new System.Drawing.Point(1176, 6);
+            this.CurrentColorPanel.Location = new System.Drawing.Point(885, 6);
             this.CurrentColorPanel.Margin = new System.Windows.Forms.Padding(1);
             this.CurrentColorPanel.Name = "CurrentColorPanel";
             this.CurrentColorPanel.Size = new System.Drawing.Size(41, 37);
@@ -211,7 +342,7 @@
             // 
             this.ThicknessLabel.AutoSize = true;
             this.ThicknessLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ThicknessLabel.Location = new System.Drawing.Point(918, 0);
+            this.ThicknessLabel.Location = new System.Drawing.Point(787, 10);
             this.ThicknessLabel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.ThicknessLabel.Name = "ThicknessLabel";
             this.ThicknessLabel.Size = new System.Drawing.Size(74, 21);
@@ -220,7 +351,7 @@
             // 
             // ThicknessTrackBar
             // 
-            this.ThicknessTrackBar.Location = new System.Drawing.Point(902, 27);
+            this.ThicknessTrackBar.Location = new System.Drawing.Point(771, 37);
             this.ThicknessTrackBar.Margin = new System.Windows.Forms.Padding(1);
             this.ThicknessTrackBar.Name = "ThicknessTrackBar";
             this.ThicknessTrackBar.Size = new System.Drawing.Size(107, 45);
@@ -230,7 +361,7 @@
             // EraseButton
             // 
             this.EraseButton.Image = ((System.Drawing.Image)(resources.GetObject("EraseButton.Image")));
-            this.EraseButton.Location = new System.Drawing.Point(558, 19);
+            this.EraseButton.Location = new System.Drawing.Point(449, 19);
             this.EraseButton.Margin = new System.Windows.Forms.Padding(1);
             this.EraseButton.Name = "EraseButton";
             this.EraseButton.Size = new System.Drawing.Size(35, 35);
@@ -241,7 +372,7 @@
             // DrawFilledEllipseButton
             // 
             this.DrawFilledEllipseButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawFilledEllipseButton.Image")));
-            this.DrawFilledEllipseButton.Location = new System.Drawing.Point(518, 19);
+            this.DrawFilledEllipseButton.Location = new System.Drawing.Point(409, 19);
             this.DrawFilledEllipseButton.Margin = new System.Windows.Forms.Padding(1);
             this.DrawFilledEllipseButton.Name = "DrawFilledEllipseButton";
             this.DrawFilledEllipseButton.Size = new System.Drawing.Size(35, 35);
@@ -252,7 +383,7 @@
             // DrawFilledRectangleButton
             // 
             this.DrawFilledRectangleButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawFilledRectangleButton.Image")));
-            this.DrawFilledRectangleButton.Location = new System.Drawing.Point(476, 19);
+            this.DrawFilledRectangleButton.Location = new System.Drawing.Point(367, 19);
             this.DrawFilledRectangleButton.Margin = new System.Windows.Forms.Padding(1);
             this.DrawFilledRectangleButton.Name = "DrawFilledRectangleButton";
             this.DrawFilledRectangleButton.Size = new System.Drawing.Size(35, 35);
@@ -264,10 +395,10 @@
             // 
             this.RedColorButton.BackColor = System.Drawing.Color.Red;
             this.RedColorButton.ForeColor = System.Drawing.Color.Black;
-            this.RedColorButton.Location = new System.Drawing.Point(1439, 19);
+            this.RedColorButton.Location = new System.Drawing.Point(1141, 19);
             this.RedColorButton.Margin = new System.Windows.Forms.Padding(1);
             this.RedColorButton.Name = "RedColorButton";
-            this.RedColorButton.Size = new System.Drawing.Size(35, 35);
+            this.RedColorButton.Size = new System.Drawing.Size(30, 30);
             this.RedColorButton.TabIndex = 5;
             this.RedColorButton.UseVisualStyleBackColor = false;
             this.RedColorButton.Click += new System.EventHandler(this.OnRedColorButtonClick);
@@ -275,9 +406,9 @@
             // BlackColorButton
             // 
             this.BlackColorButton.BackColor = System.Drawing.SystemColors.WindowText;
-            this.BlackColorButton.Location = new System.Drawing.Point(1400, 19);
+            this.BlackColorButton.Location = new System.Drawing.Point(1037, 19);
             this.BlackColorButton.Name = "BlackColorButton";
-            this.BlackColorButton.Size = new System.Drawing.Size(35, 35);
+            this.BlackColorButton.Size = new System.Drawing.Size(30, 30);
             this.BlackColorButton.TabIndex = 5;
             this.BlackColorButton.UseVisualStyleBackColor = false;
             this.BlackColorButton.Click += new System.EventHandler(this.OnBlackColorButtonClick);
@@ -285,7 +416,7 @@
             // DrawEllipseButton
             // 
             this.DrawEllipseButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawEllipseButton.Image")));
-            this.DrawEllipseButton.Location = new System.Drawing.Point(436, 19);
+            this.DrawEllipseButton.Location = new System.Drawing.Point(327, 19);
             this.DrawEllipseButton.Name = "DrawEllipseButton";
             this.DrawEllipseButton.Size = new System.Drawing.Size(35, 35);
             this.DrawEllipseButton.TabIndex = 5;
@@ -296,7 +427,7 @@
             // DrawRectangleButton
             // 
             this.DrawRectangleButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawRectangleButton.Image")));
-            this.DrawRectangleButton.Location = new System.Drawing.Point(395, 19);
+            this.DrawRectangleButton.Location = new System.Drawing.Point(286, 19);
             this.DrawRectangleButton.Name = "DrawRectangleButton";
             this.DrawRectangleButton.Size = new System.Drawing.Size(35, 35);
             this.DrawRectangleButton.TabIndex = 5;
@@ -306,7 +437,7 @@
             // DrawLineButton
             // 
             this.DrawLineButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawLineButton.Image")));
-            this.DrawLineButton.Location = new System.Drawing.Point(355, 19);
+            this.DrawLineButton.Location = new System.Drawing.Point(246, 19);
             this.DrawLineButton.Name = "DrawLineButton";
             this.DrawLineButton.Size = new System.Drawing.Size(35, 35);
             this.DrawLineButton.TabIndex = 3;
@@ -327,16 +458,6 @@
             this.DrawPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnDrawPictureBoxMouseMove);
             this.DrawPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnDrawPictureBoxMouseUp);
             // 
-            // DrawByPenButton
-            // 
-            this.DrawByPenButton.Image = ((System.Drawing.Image)(resources.GetObject("DrawByPenButton.Image")));
-            this.DrawByPenButton.Location = new System.Drawing.Point(314, 19);
-            this.DrawByPenButton.Name = "DrawByPenButton";
-            this.DrawByPenButton.Size = new System.Drawing.Size(35, 35);
-            this.DrawByPenButton.TabIndex = 5;
-            this.DrawByPenButton.UseVisualStyleBackColor = true;
-            this.DrawByPenButton.Click += new System.EventHandler(this.OnDrawByPenButtonClick);
-            // 
             // PaintForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -347,6 +468,7 @@
             this.Controls.Add(this.ToolsPanel);
             this.Name = "PaintForm";
             this.Text = "Paint 2.0";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnPaintFormClosing);
             this.ToolsPanel.ResumeLayout(false);
             this.ToolsPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ThicknessTrackBar)).EndInit();
@@ -381,5 +503,15 @@
         private Button UnDoActionButton;
         private Button ReDoButton;
         private Button DrawByPenButton;
+        private Button WhiteColorButton;
+        private Button GrayColorButton;
+        private Button OrangeColorButton;
+        private Button YellowColorButton;
+        private Button GreenColorButton;
+        private Button DeepSkyBlueColorButton;
+        private Button BlueColorButton;
+        private Button PurpleColorButton;
+        private Button ChooseOtherColorButton;
+        private Label OtherColorsLabel;
     }
 }

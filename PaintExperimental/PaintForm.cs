@@ -7,8 +7,14 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace PaintExperimental
 {
+    /// <summary>
+    /// Главная форма
+    /// </summary>
     public partial class PaintForm : Form
     {
+
+        #region Делегаты и события
+
         /// <summary>
         /// Тип делегата PaintAction, который будет обрабатывать события перерисовки
         /// </summary>
@@ -21,29 +27,9 @@ namespace PaintExperimental
         private PaintAction _allActions;
 
         /// <summary>
-        /// Последнее действие
+        /// Последнее действие рисования
         /// </summary>
         private PaintAction _lastAction;
-
-        /// <summary>
-        /// Все текущие действия
-        /// </summary>
-        private Stack<PaintAction> _stackOfAllActions;
-
-        /// <summary>
-        /// Отмененные действия
-        /// </summary>
-        private Stack<PaintAction> _canceledActions;
-
-        ///// <summary>
-        ///// Все действия, которые происходили во время одного стирания, то есть все совокупные ссылки на DrawLine
-        ///// </summary>
-        //private Stack<PaintAction> _oneErasingActions;
-
-        /// <summary>
-        /// Список точек ломаной линии
-        /// </summary>
-        private List<Point> _pointsOfBrokenLine;
 
         /// <summary>
         /// Тип делегата CurrentPaintAction, который будет хранить текущий метод, который нужно произвести при рисовании
@@ -55,12 +41,49 @@ namespace PaintExperimental
         /// </summary>
         private CurrentPaintAction _currentPaintAction;
 
+        #endregion делегаты и события
+
+
+        #region Приватные и readonly поля
+
+        /// <summary>
+        /// Изображение для загрузки или сохранения
+        /// </summary>
+        private readonly Bitmap _image;
+
+        /// <summary>
+        /// Все текущие действия
+        /// </summary>
+        private Stack<PaintAction> _stackOfAllActions;
+
+        /// <summary>
+        /// Отмененные действия
+        /// </summary>
+        private Stack<PaintAction> _canceledActions;
+
+        /// <summary>
+        /// Список точек ломаной линии
+        /// </summary>
+        private List<Point> _pointsOfBrokenLine;
+           
+        /// <summary>
+        /// Сейчас что-то рисуется?
+        /// </summary>
         private bool _isDrawing;
 
+        /// <summary>
+        /// Сейчас рисуется с помощью карандаша? (ломаная линия)
+        /// </summary>
         private bool _isDrawingByPen;
 
+        /// <summary>
+        /// Сейчас пишется текст?
+        /// </summary>
         private bool _isTypingText;
 
+        /// <summary>
+        /// Действие рисования завершено
+        /// </summary>
         private bool _isActionCompleted;
 
         /// <summary>
@@ -71,17 +94,12 @@ namespace PaintExperimental
         /// <summary>
         /// GDI+ пространство
         /// </summary>
-        public Graphics _graphics;
+        private Graphics _graphics;
 
         /// <summary>
         /// Текущий карандаш
         /// </summary>
-        public Pen _pen;
-
-        ///// <summary>
-        ///// Кисть для заливки внутри фигур
-        ///// </summary>
-        //public Brush _brush;
+        private Pen _pen;
 
         /// <summary>
         /// Текущий цвет кистей
@@ -93,7 +111,10 @@ namespace PaintExperimental
         /// </summary>
         private Color _backgroundColor;
 
-        public float _lineWidth;
+        /// <summary>
+        /// Ширина кисти
+        /// </summary>
+        private float _lineWidth;
 
         /// <summary>
         /// Начальная точка - позиция мыши
@@ -105,15 +126,15 @@ namespace PaintExperimental
         /// </summary>
         private Point? _endMousePosition;
 
-        private readonly Bitmap _image;
+        #endregion Приватные и readonly поля
 
-        private Font fnt = new Font("Arial", 10);
 
+        /// <summary>
+        /// Конструктор по умолчанию
+        /// </summary>
         public PaintForm()
         {
             InitializeComponent();
-
-            //Show();
 
             _graphics = DrawPictureBox.CreateGraphics();
 
@@ -121,6 +142,7 @@ namespace PaintExperimental
 
             _currentColor = Color.Black;
             _backgroundColor = Color.White;
+
             _lineWidth = 1;
             _pen = new Pen(_currentColor, _lineWidth);
 
@@ -132,78 +154,16 @@ namespace PaintExperimental
 
             _stackOfAllActions = new Stack<PaintAction>();
             _canceledActions = new Stack<PaintAction>();
-            //_oneErasingActions = new Stack<PaintAction>();
             _pointsOfBrokenLine = new List<Point>();
-
-            //graphics.Dispose();
         }
 
+        #region Обработчики нажатий на кнопки
 
-        //// Разные способы начала работы с классом Graphics
-
-        //protected override void OnPaint(PaintEventArgs e)
-        //{
-        //    base.OnPaint(e);
-
-        //    var graphics = e.Graphics;
-        //}
-
-        //private void OnFormPaint(object sender, PaintEventArgs e)
-        //{
-        //    var graphics = e.Graphics;
-
-        //    Pen pen = new Pen(Color.YellowGreen, 10);
-        //    //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-        //    //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-        //    //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
-        //    //pen.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
-
-        //    SolidBrush brush = new SolidBrush(Color.DarkRed);
-
-        //    //// Создание текстурной кисти с помощью картинки
-        //    Image image = new Bitmap(@"D:\WinForms\Homeworks\WF HT6\PaintExperimental\c++logo.png");
-        //    //TextureBrush texture = new TextureBrush(image);
-
-        //    //// Узорная кисть
-        //    //HatchBrush hatchBrush = new HatchBrush(HatchStyle.ZigZag, Color.Yellow, Color.Black);
-
-        //    LinearGradientBrush linear = new LinearGradientBrush(new Rectangle(0, 0, 100, 100), Color.Blue, Color.Red, LinearGradientMode.Horizontal);
-
-        //    Pen pen1 = new Pen(brush, 10);
-        //    //pen1.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-
-        //    graphics.FillRectangle(brush, 50, 50, 200, 100);
-        //    graphics.DrawRectangle(pen, 50, 50, 200, 100);
-
-        //    graphics.DrawRectangle(pen, 300, 50, 200, 100);
-        //    //graphics.FillRectangle(brush, 300, 50, 200, 100);
-        //    //graphics.FillRectangle(texture, 300, 50, 200, 100);
-        //    //graphics.FillRectangle(hatchBrush, 300, 50, 200, 100);
-        //    //graphics.FillRectangle(linear, 300, 50, 200, 100);
-
-        //    graphics.DrawLine(pen1, 50, 200, 200, 200);
-        //    graphics.DrawLine(pen1, 50, 200, 200, 250);
-
-        //    graphics.DrawLines(pen1, new Point[] { new Point(50, 300), new Point(100, 350), new Point(75, 400) });
-
-        //    //graphics.FillEllipse(brush, 50, 450, 200, 100);
-        //    //graphics.DrawEllipse(pen, 50, 450, 200, 100);
-
-        //    graphics.FillPolygon(brush, new Point[] { new Point(50, 300), new Point(100, 350), new Point(75, 400) });
-        //    graphics.DrawPolygon(pen, new Point[] { new Point(50, 300), new Point(100, 350), new Point(75, 400) });
-
-        //    graphics.DrawImage(image, 200, 350);
-
-        //    Font font = new Font("Arial", 14);
-
-        //    graphics.DrawString("Hello World1", font, brush, 450, 450);
-        //    var size = graphics.MeasureString("Hello World1", font);
-
-
-
-        //    graphics.Dispose();
-        //}
-
+        /// <summary>
+        /// Обработчик нажатия на кнопку рисования прямой линии
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawLineButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawLine;
@@ -211,6 +171,11 @@ namespace PaintExperimental
             _isTypingText = false;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку рисования прямоугольника
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawRectangleButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawRectangle;
@@ -218,6 +183,11 @@ namespace PaintExperimental
             _isTypingText = false;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку рисования элипса
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawEllipse;
@@ -225,6 +195,11 @@ namespace PaintExperimental
             _isTypingText = false;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку рисования элипса с заливкой
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawFilledEllipseButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawFilledEllipse;
@@ -232,6 +207,11 @@ namespace PaintExperimental
             _isTypingText = false;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку рисования прямоугольника с заливкой
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawFilledRectangleButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawFilledRectangle;
@@ -239,6 +219,11 @@ namespace PaintExperimental
             _isTypingText = false;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку рисования карандашом (ломаная линия)
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawByPenButtonClick(object sender, EventArgs e)
         {
             _isDrawingByPen = true;
@@ -246,77 +231,41 @@ namespace PaintExperimental
             _currentPaintAction = DrawLines;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку ластика
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnEraseButtonClick(object sender, EventArgs e)
         {
             _isDrawingByPen = true;
             _isTypingText = false;
-            //_currentPaintAction = DrawLine;
             _currentPaintAction = Erase;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку очищения всего полотна
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnClearPictureBoxClick(object sender, EventArgs e)
         {
             _allActions = null;
             _lastAction = null;
             _currentPaintAction = null;
+            _stackOfAllActions.Clear();
+            _canceledActions.Clear();
+            
             DrawPictureBox.Image = null;
-
 
             _graphics.Clear(Color.White);
         }
 
-        private void OnBlackColorButtonClick(object sender, EventArgs e)
-        {
-            if (_isColorOfPainting)
-            {
-                _currentColor = Color.Black;
-                _pen.Color = _currentColor;
-                CurrentColorPanel.BackColor = _currentColor;
-            }
-
-            else
-            {
-                CurrentBackgroundColorPanel.BackColor = Color.Black;
-                DrawPictureBox.BackColor = Color.Black;
-            }
-        }
-
-        private void OnRedColorButtonClick(object sender, EventArgs e)
-        {
-            if (_isColorOfPainting)
-            {
-                _currentColor = Color.Red;
-                _pen.Color = _currentColor;
-                CurrentColorPanel.BackColor = _currentColor;
-            }
-
-            else
-            {
-                CurrentBackgroundColorPanel.BackColor = Color.Red;
-                DrawPictureBox.BackColor = Color.Red;
-            }
-        }
-
-        private void OnThicknessTrackBarScroll(object sender, EventArgs e)
-        {
-            _lineWidth = ThicknessTrackBar.Value;
-            _pen.Width = _lineWidth;
-        }
-
-        private void OnCurrentColorPanelClick(object sender, EventArgs e)
-        {
-            _isColorOfPainting = true;
-            CurrentColorLabel.BorderStyle = BorderStyle.Fixed3D;
-            CurrentBackgroundColorLabel.BorderStyle = BorderStyle.None;
-        }
-
-        private void OnCurrentBackgroundColorPanelClick(object sender, EventArgs e)
-        {
-            _isColorOfPainting = false;
-            CurrentBackgroundColorLabel.BorderStyle = BorderStyle.Fixed3D;
-            CurrentColorLabel.BorderStyle = BorderStyle.None;
-        }
-
+        /// <summary>
+        /// Обработчик нажатия на кнопку написания текста на полотне
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnWriteTextButtonClick(object sender, EventArgs e)
         {
             _currentPaintAction = DrawString;
@@ -324,6 +273,11 @@ namespace PaintExperimental
             _isTypingText = true;
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку открытия файла
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnOpenFileButtonClick(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -340,12 +294,15 @@ namespace PaintExperimental
             }
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку отмены последнего действия
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnUnDoActionButtonClick(object sender, EventArgs e)
         {
-            if(_stackOfAllActions.Count > 0)
+            if (_stackOfAllActions.Count > 0)
             {
-                //var extraAction = _stackOfAllActions.Pop();
-
                 var action = _stackOfAllActions.Pop();
 
                 _canceledActions.Push(action);
@@ -358,9 +315,14 @@ namespace PaintExperimental
             }
         }
 
+        /// <summary>
+        /// Обработчик нажатия на кнопку возвращения последнего действия
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnReDoButtonClick(object sender, EventArgs e)
         {
-            if(_canceledActions.Count > 0)
+            if (_canceledActions.Count > 0)
             {
                 var action = _canceledActions.Pop();
 
@@ -368,35 +330,179 @@ namespace PaintExperimental
             }
         }
 
+        #endregion Обработчики нажатий на кнопки
+
+        /// <summary>
+        /// Обработчик скролла толщины кисти
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnThicknessTrackBarScroll(object sender, EventArgs e)
+        {
+            _lineWidth = ThicknessTrackBar.Value;
+            _pen.Width = _lineWidth;
+        }
+
+        #region Обработчики выбора цвета и другого взимодействия с цветом
+
+        /// <summary>
+        /// Обработчик нажатия на панель с текущим цветом
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnCurrentColorPanelClick(object sender, EventArgs e)
+        {
+            _isColorOfPainting = true;
+            CurrentColorLabel.BorderStyle = BorderStyle.Fixed3D;
+            CurrentBackgroundColorLabel.BorderStyle = BorderStyle.None;
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на панель с цветом заднего фона полотна
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnCurrentBackgroundColorPanelClick(object sender, EventArgs e)
+        {
+            _isColorOfPainting = false;
+            CurrentBackgroundColorLabel.BorderStyle = BorderStyle.Fixed3D;
+            CurrentColorLabel.BorderStyle = BorderStyle.None;
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора черного цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnBlackColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Black);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора красного цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnRedColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Red);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора серого цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnGrayColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Gray);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора белого цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnWhiteColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.White);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора оранжевого цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnOrangeColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Orange);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора желтого цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnYellowColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Yellow);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора зеленого цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnGreenColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Green);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора голубого цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void DeepSkyBlueColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.DeepSkyBlue);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора синего цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnBlueColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Blue);
+        }
+
+        /// <summary>
+        /// Обработчик нажатия на кнопку выбора фиолетового цвета
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnPurpleColorButtonClick(object sender, EventArgs e)
+        {
+            SetColors(Color.Purple);
+        }
+
+        #endregion Обработчики выбора цвета и взимодействия с цветом
+
+
+        #region Методы, которые вызываются при рисовании
+
+        /// <summary>
+        /// Нарисовать строку с текстом
+        /// </summary>
         private void DrawString()
         {       
             if(!string.IsNullOrEmpty(TextBox.Text))
             {
                 Font font = new Font("Segoe UI", 11);
-
                 Color color = _currentColor;
-
                 Brush brush = new SolidBrush(color);
-
                 PointF startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
 
                 PaintAction action = (graphics) => { graphics.DrawString(TextBox.Text, font, brush, startPoint); };
 
                 _stackOfAllActions.Push(action);
-
                 _allActions += action;
 
                 DrawPictureBox.Invalidate();
-
-                //AddPaintAction(action);
             }
-
-            //_graphics.DrawString()
-
-            //    graphics.DrawString("Hello World1", font, brush, 450, 450);
-            //    var size = graphics.MeasureString("Hello World1", font);
         }
 
+
+
+        #endregion Методы, которые вызываются при рисовании
+
+
+        /// <summary>
+        /// нарисовать прямую линию
+        /// </summary>
         private void DrawLine()
         {
             Pen pen = (Pen)_pen.Clone();
@@ -407,34 +513,20 @@ namespace PaintExperimental
             PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
 
             AddPaintAction(action);
-
-            //_allActions += action;
-            //_lastAction = action;
-
-            //DrawPictureBox.Invalidate();
         }
 
+        /// <summary>
+        /// Нарисовать несколько сединенных линий (кривая)
+        /// </summary>
         private void DrawLines()
         {
-            Pen pen = (Pen)_pen.Clone();
+            Pen pen = _pen.Clone() as Pen;
 
             Array points = _pointsOfBrokenLine.ToArray();
 
-            //Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
-            //Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
-
-            //PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
-
             PaintAction action = (graphics) => { graphics.DrawLines(pen, points as Point[]); };
 
-            //_graphics.DrawLines()
-
             AddPaintAction(action);
-
-            //_allActions += action;
-            //_lastAction = action;
-
-            //DrawPictureBox.Invalidate();
         }
 
         private void Erase()
@@ -473,17 +565,6 @@ namespace PaintExperimental
             AddPaintAction(action);
         }
 
-        //private void DrawRectangle(PaintAction action)
-        //{
-        //    Pen pen = (Pen)_pen.Clone();
-
-        //    Rectangle rec = GetRectangle();
-
-        //    //PaintAction action = (graphics) => { graphics.DrawRectangle(pen, rec); };
-
-        //    AddPaintAction(action);
-        //}
-
         private void DrawFilledRectangle()
         {
             Brush brush = new SolidBrush(_currentColor);
@@ -520,8 +601,8 @@ namespace PaintExperimental
         /// <summary>
         /// Обработчик события нажатия клавиши мышки на PictureBox
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawPictureBoxMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -542,6 +623,11 @@ namespace PaintExperimental
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawPictureBoxMouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && _startMousePosition.HasValue)
@@ -572,35 +658,14 @@ namespace PaintExperimental
                 var cancel = _canceledActions;
 
                 _isActionCompleted = true;
-
-
-
-
-                //if (_endMousePosition == null)
-                //    _endMousePosition = new Point();
-
-                //_endMousePosition = e.Location;
-
-                //_isDrawing = false;
-
-                //_currentPaintAction?.Invoke();
-
-                //if (_isErasing)
-                //    _pointsOfBrokenLine.Clear();
-
-                //_allActions -= _lastAction;
-
-                //if (_stackOfAllActions.Count > 0)
-                //{
-                //    var plug = _stackOfAllActions.Pop();
-                //}
-
-                //var _all = _stackOfAllActions;
-
-                //var cancel = _canceledActions;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawPictureBoxMouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && _startMousePosition.HasValue && _isDrawing && !_isTypingText)
@@ -645,11 +710,20 @@ namespace PaintExperimental
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnDrawPictureBoxPaint(object sender, PaintEventArgs e)
         {
             _allActions?.Invoke(e.Graphics);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private Rectangle GetRectangle()
         {
             Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
@@ -687,6 +761,10 @@ namespace PaintExperimental
             return rec;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="paintAction"></param>
         private void AddPaintAction(PaintAction paintAction)
         {
             _allActions += paintAction;
@@ -697,6 +775,11 @@ namespace PaintExperimental
             DrawPictureBox.Invalidate();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
         private void OnSaveImageButtonClick(object sender, EventArgs e)
         {
             Rectangle rec = new Rectangle(DrawPictureBox.Location, DrawPictureBox.Size);
@@ -713,11 +796,60 @@ namespace PaintExperimental
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void ClearCancelledActionsStackAndInvokeNewAction()
         {
             _canceledActions.Clear();
 
             _currentPaintAction.Invoke();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="color"></param>
+        private void SetColors(Color color)
+        {
+            if (_isColorOfPainting)
+            {
+                _currentColor = color;
+                _pen.Color = _currentColor;
+                CurrentColorPanel.BackColor = _currentColor;
+            }
+
+            else
+            {
+                CurrentBackgroundColorPanel.BackColor = color;
+                DrawPictureBox.BackColor = color;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnChooseOtherColorButtonClick(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+
+            if(colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                SetColors(colorDialog.Color);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnPaintFormClosing(object sender, FormClosingEventArgs e)
+        {
+            this._graphics.Dispose();
+            this._image.Dispose();
         }
     }
 }
