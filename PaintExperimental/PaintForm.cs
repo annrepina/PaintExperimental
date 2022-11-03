@@ -12,7 +12,6 @@ namespace PaintExperimental
     /// </summary>
     public partial class PaintForm : Form
     {
-
         #region Делегаты и события
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace PaintExperimental
         /// </summary>
         private CurrentPaintAction _currentPaintAction;
 
-        #endregion делегаты и события
+        #endregion Делегаты и события
 
 
         #region Приватные и readonly поля
@@ -138,6 +137,8 @@ namespace PaintExperimental
 
             _graphics = DrawPictureBox.CreateGraphics();
 
+            _currentPaintAction = DrawLines;
+
             _image = new Bitmap(1000, 1000);
 
             _currentColor = Color.Black;
@@ -147,7 +148,7 @@ namespace PaintExperimental
             _pen = new Pen(_currentColor, _lineWidth);
 
             _isDrawing = false;
-            _isDrawingByPen = false;
+            _isDrawingByPen = true;
             _isTypingText = false;
             _isColorOfPainting = true;
             _isActionCompleted = false;
@@ -155,6 +156,9 @@ namespace PaintExperimental
             _stackOfAllActions = new Stack<PaintAction>();
             _canceledActions = new Stack<PaintAction>();
             _pointsOfBrokenLine = new List<Point>();
+
+            _startMousePosition = new Point();
+            _endMousePosition = new Point();
         }
 
         #region Обработчики нажатий на кнопки
@@ -295,6 +299,27 @@ namespace PaintExperimental
         }
 
         /// <summary>
+        /// Обаботчик нажатия кнопки "Сохранить"
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnSaveImageButtonClick(object sender, EventArgs e)
+        {
+            Rectangle rec = new Rectangle(DrawPictureBox.Location, DrawPictureBox.Size);
+            DrawPictureBox.DrawToBitmap(_image, rec);
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            // фильтр для сохранения только нужных файлов
+            saveFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _image.Save($"{saveFileDialog.FileName}");
+            }
+        }
+
+        /// <summary>
         /// Обработчик нажатия на кнопку отмены последнего действия
         /// </summary>
         /// <param name="sender">Объект, вызвавший событие</param>
@@ -330,18 +355,23 @@ namespace PaintExperimental
             }
         }
 
-        #endregion Обработчики нажатий на кнопки
-
         /// <summary>
-        /// Обработчик скролла толщины кисти
+        /// Выбрать дополнительные цвета (колорпикер)
         /// </summary>
         /// <param name="sender">Объект, вызвавший событие</param>
         /// <param name="e">Содержит информацию о событии</param>
-        private void OnThicknessTrackBarScroll(object sender, EventArgs e)
+        private void OnChooseOtherColorButtonClick(object sender, EventArgs e)
         {
-            _lineWidth = ThicknessTrackBar.Value;
-            _pen.Width = _lineWidth;
+            ColorDialog colorDialog = new ColorDialog();
+
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                SetColors(colorDialog.Color);
+            }
         }
+
+        #endregion Обработчики нажатий на кнопки
+
 
         #region Обработчики выбора цвета и другого взимодействия с цветом
 
@@ -488,20 +518,12 @@ namespace PaintExperimental
 
                 PaintAction action = (graphics) => { graphics.DrawString(TextBox.Text, font, brush, startPoint); };
 
-                _stackOfAllActions.Push(action);
-                _allActions += action;
-
-                DrawPictureBox.Invalidate();
+                AddPaintAction(action);
             }
         }
 
-
-
-        #endregion Методы, которые вызываются при рисовании
-
-
         /// <summary>
-        /// нарисовать прямую линию
+        /// Нарисовать прямую линию
         /// </summary>
         private void DrawLine()
         {
@@ -529,6 +551,9 @@ namespace PaintExperimental
             AddPaintAction(action);
         }
 
+        /// <summary>
+        /// Стереть ластиком
+        /// </summary>
         private void Erase()
         {
             float width = _lineWidth;
@@ -537,23 +562,14 @@ namespace PaintExperimental
 
             Array points = _pointsOfBrokenLine.ToArray();
 
-            //Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
-            //Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
-
-            //PaintAction action = (graphics) => { graphics.DrawLine(pen, startPoint.Value, endPoint.Value); };
-
             PaintAction action = (graphics) => { graphics.DrawLines(pen, points as Point[]); };
 
-            //_graphics.DrawLines()
-
             AddPaintAction(action);
-
-            //_allActions += action;
-            //_lastAction = action;
-
-            //DrawPictureBox.Invalidate();
         }
 
+        /// <summary>
+        /// Нарисовать прямоугольник
+        /// </summary>
         private void DrawRectangle()
         {
             Pen pen = (Pen)_pen.Clone();
@@ -565,6 +581,9 @@ namespace PaintExperimental
             AddPaintAction(action);
         }
 
+        /// <summary>
+        /// Нарисовать прямоугольник с заливкой
+        /// </summary>
         private void DrawFilledRectangle()
         {
             Brush brush = new SolidBrush(_currentColor);
@@ -576,6 +595,9 @@ namespace PaintExperimental
             AddPaintAction(action);
         }
 
+        /// <summary>
+        /// Нарисовать элипс
+        /// </summary>
         private void DrawEllipse()
         {
             Pen pen = (Pen)_pen.Clone();
@@ -587,6 +609,9 @@ namespace PaintExperimental
             AddPaintAction(action);
         }
 
+        /// <summary>
+        /// Нарисовать элипс с заливкой
+        /// </summary>
         private void DrawFilledEllipse()
         {
             Brush brush = new SolidBrush(_currentColor);
@@ -598,6 +623,11 @@ namespace PaintExperimental
             AddPaintAction(action);
         }
 
+        #endregion Методы, которые вызываются при рисовании
+
+
+        #region Обработчики действий мыши
+
         /// <summary>
         /// Обработчик события нажатия клавиши мышки на PictureBox
         /// </summary>
@@ -607,9 +637,6 @@ namespace PaintExperimental
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (_startMousePosition == null)
-                    _startMousePosition = new Point();
-
                 _startMousePosition = e.Location;
 
                 if (_isDrawingByPen)
@@ -617,14 +644,13 @@ namespace PaintExperimental
 
                 if (_isTypingText)
                     ClearCancelledActionsStackAndInvokeNewAction();
-                    //_currentPaintAction.Invoke();
 
                 _isDrawing = true;
             }
         }
 
         /// <summary>
-        /// 
+        /// Обработчик события отпускания клавиши мыши
         /// </summary>
         /// <param name="sender">Объект, вызвавший событие</param>
         /// <param name="e">Содержит информацию о событии</param>
@@ -632,37 +658,21 @@ namespace PaintExperimental
         {
             if (e.Button == MouseButtons.Left && _startMousePosition.HasValue)
             {
-                if (_endMousePosition == null)
-                    _endMousePosition = new Point();
-
                 _endMousePosition = e.Location;
 
                 _isDrawing = false;
 
-                //_currentPaintAction?.Invoke();
-
                 if (_isDrawingByPen)
                     _pointsOfBrokenLine.Clear();
 
-                //_allActions -= _lastAction;
-
-                //if (_stackOfAllActions.Count > 0)
-                //{
-                //    var plug = _stackOfAllActions.Pop();
-                //}
-
                 DrawPictureBox.Invalidate();
-
-                var _all = _stackOfAllActions;
-
-                var cancel = _canceledActions;
 
                 _isActionCompleted = true;
             }
         }
 
         /// <summary>
-        /// 
+        /// Обработчик события движения мышью
         /// </summary>
         /// <param name="sender">Объект, вызвавший событие</param>
         /// <param name="e">Содержит информацию о событии</param>
@@ -670,23 +680,7 @@ namespace PaintExperimental
         {
             if (e.Button == MouseButtons.Left && _startMousePosition.HasValue && _isDrawing && !_isTypingText)
             {
-                if (_endMousePosition == null)
-                    _endMousePosition = new Point();
-
                 _endMousePosition = e.Location;
-
-
-                //_currentPaintAction?.Invoke();
-
-
-                //if (_isErasing == false)
-                //{
-                //    _allActions -= _lastAction;
-                //}
-                //else
-                //{
-                //    _pointsOfBrokenLine.Add(e.Location);
-                //}
 
                 if(_isDrawingByPen)
                 {
@@ -706,22 +700,17 @@ namespace PaintExperimental
                     _isActionCompleted = false;
 
                 ClearCancelledActionsStackAndInvokeNewAction();
-                //_currentPaintAction?.Invoke();
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender">Объект, вызвавший событие</param>
-        /// <param name="e">Содержит информацию о событии</param>
-        private void OnDrawPictureBoxPaint(object sender, PaintEventArgs e)
-        {
-            _allActions?.Invoke(e.Graphics);
-        }
+
+        #endregion Обработчики действий мыши
+
+
+        #region Вспомогательные методы
 
         /// <summary>
-        /// 
+        /// Получить прямоугольник исходя из координат точек
         /// </summary>
         /// <returns></returns>
         private Rectangle GetRectangle()
@@ -729,31 +718,21 @@ namespace PaintExperimental
             Point? startPoint = new Point(_startMousePosition.Value.X, _startMousePosition.Value.Y);
             Point? endPoint = new Point(_endMousePosition.Value.X, _endMousePosition.Value.Y);
 
-            int left;
-            int right;
-            int top;
-            int bottom;
+            int left = endPoint.Value.X;
+            int right = startPoint.Value.X;
+            int top = endPoint.Value.Y;
+            int bottom = bottom = startPoint.Value.Y;
 
             if (endPoint.Value.X > startPoint.Value.X)
             {
                 left = startPoint.Value.X;
                 right = endPoint.Value.X;
             }
-            else
-            {
-                left = endPoint.Value.X;
-                right = startPoint.Value.X;
-            }
 
             if (endPoint.Value.Y > startPoint.Value.Y)
             {
                 top = startPoint.Value.Y;
                 bottom = endPoint.Value.Y;
-            }
-            else
-            {
-                top = endPoint.Value.Y;
-                bottom = startPoint.Value.Y;
             }
 
             Rectangle rec = Rectangle.FromLTRB(left, top, right, bottom);
@@ -762,7 +741,7 @@ namespace PaintExperimental
         }
 
         /// <summary>
-        /// 
+        /// Добавить ссылки на методы в необходимые делегаты
         /// </summary>
         /// <param name="paintAction"></param>
         private void AddPaintAction(PaintAction paintAction)
@@ -776,28 +755,7 @@ namespace PaintExperimental
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender">Объект, вызвавший событие</param>
-        /// <param name="e">Содержит информацию о событии</param>
-        private void OnSaveImageButtonClick(object sender, EventArgs e)
-        {
-            Rectangle rec = new Rectangle(DrawPictureBox.Location, DrawPictureBox.Size);
-            DrawPictureBox.DrawToBitmap(_image, rec);
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-
-            // фильтр для сохранения только нужных файлов
-            saveFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png";
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                _image.Save($"{saveFileDialog.FileName}");
-            }
-        }
-
-        /// <summary>
-        /// 
+        /// Очистить стек с отмененными действиями и вызвать новое действие
         /// </summary>
         private void ClearCancelledActionsStackAndInvokeNewAction()
         {
@@ -807,7 +765,7 @@ namespace PaintExperimental
         }
 
         /// <summary>
-        /// 
+        /// Задать цвета
         /// </summary>
         /// <param name="color"></param>
         private void SetColors(Color color)
@@ -826,23 +784,34 @@ namespace PaintExperimental
             }
         }
 
+        #endregion Вспомогательные методы
+
+
+        #region Другие обработчики 
+
         /// <summary>
-        /// 
+        /// Обработчик скролла толщины кисти
         /// </summary>
         /// <param name="sender">Объект, вызвавший событие</param>
         /// <param name="e">Содержит информацию о событии</param>
-        private void OnChooseOtherColorButtonClick(object sender, EventArgs e)
+        private void OnThicknessTrackBarScroll(object sender, EventArgs e)
         {
-            ColorDialog colorDialog = new ColorDialog();
-
-            if(colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                SetColors(colorDialog.Color);
-            }
+            _lineWidth = ThicknessTrackBar.Value;
+            _pen.Width = _lineWidth;
         }
 
         /// <summary>
-        /// 
+        /// Обработчик события перерисовки главного PictureBox
+        /// </summary>
+        /// <param name="sender">Объект, вызвавший событие</param>
+        /// <param name="e">Содержит информацию о событии</param>
+        private void OnDrawPictureBoxPaint(object sender, PaintEventArgs e)
+        {
+            _allActions?.Invoke(e.Graphics);
+        }
+
+        /// <summary>
+        /// Обработчик события закрытия формы
         /// </summary>
         /// <param name="sender">Объект, вызвавший событие</param>
         /// <param name="e">Содержит информацию о событии</param>
@@ -851,5 +820,7 @@ namespace PaintExperimental
             this._graphics.Dispose();
             this._image.Dispose();
         }
+
+        #endregion Другие обработчики 
     }
 }
